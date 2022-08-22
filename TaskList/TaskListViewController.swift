@@ -7,11 +7,18 @@
 
 import UIKit
 
+protocol TaskViewControllerDelegate {
+    func reloadData()
+}
+
 class TaskListViewController: UITableViewController {
+    //создаем свойство AppDelegate, создаем Managed Object Context, там создаем модели данных и записываем на диск
+    private let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private let cellId = "task"     //ячейка
                     //создаем массив чтобы его отобразить в таблице
     private var taskList: [Task] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         //регистрируем ячейку таблицы
@@ -19,7 +26,7 @@ class TaskListViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         view.backgroundColor = .white
         setupNavigationBar()
-        
+        fetchData()
     }
 
     
@@ -55,13 +62,19 @@ class TaskListViewController: UITableViewController {
     
     @objc private func addNewTask() {
         let TaskVC = TaskViewController()  // создали экземпляр класса для перехода на другой VC
-        present(TaskVC, animated: true)  //делаем модальный переход по умолчанию
-        
-        
+        present(TaskVC, animated: true)
+        //делаем модальный переход по умолчанию
     }
-    
-    
-    
+    //восстанвливаем данные из БД
+    private func fetchData() {
+        //получаем из БД данные с типом Task
+        let fetchRequest = Task.fetchRequest()
+        do {
+            taskList = try viewContext.fetch(fetchRequest)
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 
 }
 
@@ -79,4 +92,10 @@ extension TaskListViewController {
         return cell
     }
     
+}
+extension TaskListViewController: TaskViewControllerDelegate {
+    func reloadData() {
+        fetchData()
+        tableView.reloadData()
+    }
 }

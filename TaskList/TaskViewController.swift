@@ -9,10 +9,11 @@ import UIKit
 import CoreData
 
 class TaskViewController: UIViewController {
-//создаем свойство AppDelegate, создаем Managed Object Context, там создаем модели данных и записываем на диск
+
+    var delegate: TaskViewControllerDelegate!
+
+    //создаем свойство AppDelegate, создаем Managed Object Context, там создаем модели данных и записываем на диск
     private let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-    
-    
     //надо подготовить текстовое поле чтобы его было видно
 private lazy var taskTextField: UITextField = {
        let textField = UITextField()
@@ -34,12 +35,13 @@ private lazy var taskTextField: UITextField = {
                 save()
             }
         )
-        
-        
     } ()
     
     private lazy var cancellButton: UIButton = {
-        createButton(withTitle: "Cancel", andColor: .systemRed, action: UIAction { [ unowned self] _ in
+        createButton(
+            withTitle: "Cancel",
+            andColor: .systemRed,
+            action: UIAction { [ unowned self] _ in
             dismiss(animated: true)
                 }
             )
@@ -52,7 +54,7 @@ private lazy var taskTextField: UITextField = {
         view.backgroundColor = .white
         setupSubviews(taskTextField, saveButton, cancellButton)
         setConstraints()
-        view.addSubview(taskTextField)
+ //       view.addSubview(taskTextField)
     }
     
     private func setupSubviews(_ subview: UIView...) {
@@ -100,14 +102,32 @@ private lazy var taskTextField: UITextField = {
         return UIButton(configuration: buttonCongiration, primaryAction: action)
         }
         
+//    private func save() {
+//        //сначала создаем экзмеляр модели а потом записываем на диск.
+//        // мы создали экземпляр модели Task
+//        let task = Task(context: viewContext)
+//        //изменили его и надо его теперь сохранить
+//        task.title = taskTextField.text
+//        if viewContext.hasChanges{
+//            do {
+//                try viewContext.save()
+//            } catch let error {
+//                print(error)
+//            }
+//        }
+//        delegate.reloadData()
+//        dismiss(animated: true)
+//    }
+//
+//
+//    }
+//
+//
     private func save() {
-        //сначала создаем экзмеляр модели а потом записываем на диск.
-        // мы создали экземпляр модели Task
         let task = Task(context: viewContext)
-        //изменили его и надо его теперь сохранить
         task.title = taskTextField.text
         
-        if viewContext.hasChanges{
+        if viewContext.hasChanges {
             do {
                 try viewContext.save()
             } catch let error {
@@ -115,10 +135,7 @@ private lazy var taskTextField: UITextField = {
             }
         }
         
+        delegate.reloadData()
         dismiss(animated: true)
     }
-        
-        
-    }
-    
-
+}
