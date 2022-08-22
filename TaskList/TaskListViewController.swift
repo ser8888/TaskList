@@ -35,12 +35,24 @@ class TaskListViewController: UITableViewController {
     // чтобы изменился цвет на экране
         navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-        
-        
+    // добавляем кнопку добавить(+)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .add,
+            target: self,
+            action: #selector(addNewTask)
+        )
+        // tintcolor определяет цвет всех элементов находящихся внутри NavigationBar
+        navigationController?.navigationBar.tintColor = .white
         
         
     }
     
+    @objc private func addNewTask() {
+        let TaskVC = TaskViewController()  // создали экземпляр класса для перехода на другой VC
+        present(TaskVC, animated: true)  //делаем модальный переход по умолчанию
+        
+        
+    }
     
     
     
