@@ -19,36 +19,26 @@ private lazy var taskTextField: UITextField = {
     }()
     
     private lazy var saveButton: UIButton = {
-        var attributes = AttributeContainer()
-        attributes.font = UIFont.boldSystemFont(ofSize: 18)
-        //сначала надо настроить конфигурацию кнопки и потом ее инициализировать
-        var buttonCongiration = UIButton.Configuration.filled()
-        buttonCongiration.attributedTitle = AttributedString("Save Task", attributes: attributes)
-        buttonCongiration.baseBackgroundColor = UIColor(
-            red: 21/255,
-            green: 101/255,
-            blue: 192/255,
-            alpha: 194/255
+        createButton(
+            withTitle: "Save Task",
+            andColor: UIColor(
+                red: 21/255,
+                green: 101/255,
+                blue: 192/255,
+                alpha: 194/255
+            ), action: UIAction { [unowned self] _ in
+                dismiss(animated: true)
+            }
         )
-        buttonCongiration.buttonSize = .medium  // medium по умолчанию
- //       buttonCongiration.title = "Save Task"  - не нужно если менем цвет и шрифт
-        return UIButton(configuration: buttonCongiration, primaryAction: UIAction { [unowned self] _ in
-            dismiss(animated: true)
-        })
+        
     } ()
     
     private lazy var cancellButton: UIButton = {
-        var attributes = AttributeContainer()
-        attributes.font = UIFont.boldSystemFont(ofSize: 18)
-        //сначала надо настроить конфигурацию кнопки и потом ее инициализировать
-        var buttonCongiration = UIButton.Configuration.filled()
-        buttonCongiration.attributedTitle = AttributedString("Cancell", attributes: attributes)
-        buttonCongiration.baseBackgroundColor = #colorLiteral(red: 0.9372549057, green: 0.3490196168, blue: 0.1921568662, alpha: 1)
-        buttonCongiration.buttonSize = .medium  // medium по умолчанию
- //       buttonCongiration.title = "Save Task"  - не нужно если менем цвет и шрифт
-        return UIButton(configuration: buttonCongiration, primaryAction: UIAction { [unowned self] _ in
+        createButton(withTitle: "Cancel", andColor: .systemRed, action: UIAction { [ unowned self] _ in
             dismiss(animated: true)
-        })
+                }
+            )
+        
     } ()
 
     override func viewDidLoad() {
@@ -92,5 +82,21 @@ private lazy var taskTextField: UITextField = {
         ])
         
     }
+    // вспомогательный метод который создает кнопки action - действие при нажатии на кнопку
+    private func createButton(withTitle title: String, andColor color: UIColor, action: UIAction) -> UIButton {
+        var attributes = AttributeContainer()
+        attributes.font = UIFont.boldSystemFont(ofSize: 18)
+        //сначала надо настроить конфигурацию кнопки и потом ее инициализировать
+        var buttonCongiration = UIButton.Configuration.filled()
+        buttonCongiration.attributedTitle = AttributedString(title, attributes: attributes)
+        buttonCongiration.baseBackgroundColor = color
+        buttonCongiration.buttonSize = .medium  // medium по умолчанию
+ //       buttonCongiration.title = "Save Task"  - не нужно если менем цвет и шрифт
+        return UIButton(configuration: buttonCongiration, primaryAction: action)
+        }
+        
+        
+        
+    }
     
-}
+
