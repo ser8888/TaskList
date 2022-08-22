@@ -6,10 +6,14 @@
 //
 
 import UIKit
+import CoreData
 
 class TaskViewController: UIViewController {
-//надо подготовить текстовое поле чтобы его было видно
+//создаем свойство AppDelegate, создаем Managed Object Context, там создаем модели данных и записываем на диск
+    private let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
+    
+    //надо подготовить текстовое поле чтобы его было видно
 private lazy var taskTextField: UITextField = {
        let textField = UITextField()
         //нельзя работать с текстовым поля пока не появился VIEW
@@ -27,9 +31,10 @@ private lazy var taskTextField: UITextField = {
                 blue: 192/255,
                 alpha: 194/255
             ), action: UIAction { [unowned self] _ in
-                dismiss(animated: true)
+                save()
             }
         )
+        
         
     } ()
     
@@ -95,6 +100,23 @@ private lazy var taskTextField: UITextField = {
         return UIButton(configuration: buttonCongiration, primaryAction: action)
         }
         
+    private func save() {
+        //сначала создаем экзмеляр модели а потом записываем на диск.
+        // мы создали экземпляр модели Task
+        let task = Task(context: viewContext)
+        //изменили его и надо его теперь сохранить
+        task.title = taskTextField.text
+        
+        if viewContext.hasChanges{
+            do {
+                try viewContext.save()
+            } catch let error {
+                print(error)
+            }
+        }
+        
+        dismiss(animated: true)
+    }
         
         
     }
